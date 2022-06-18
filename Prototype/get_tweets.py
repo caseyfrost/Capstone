@@ -1,13 +1,7 @@
 import tweepy
 from tweepy import OAuthHandler
 import pandas as pd
-
-"""I like to have my python script print a message at the beginning. This helps me confirm whether everything is set 
-up correctly. And it's nice to get an uplifting message ;). """
-
-print("You got this!")
-
-
+from config import consumer_key, consumer_secret, access_token, access_token_secret
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
