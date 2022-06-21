@@ -7,7 +7,7 @@ import os
 import shutil
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # getting the bart gtfs .zip
 bart_gtfs_url = r"https://www.bart.gov/dev/schedules/google_transit.zip"  # BART gtfs url
@@ -42,7 +42,9 @@ def main(url, out_dir):
 default_args = {
     'owner': 'cfrost',
     'start_date': '2022-05-30',
-    'end_date': '2023-05-30'
+    'end_date': '2023-05-30',
+    'retries': 3,
+    'retry_delay': timedelta(minutes=3)
 }
 
 dag = DAG(

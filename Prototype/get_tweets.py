@@ -1,6 +1,9 @@
 import tweepy
 import pandas as pd
 import psycopg2
+from airflow.models import Variable
+from airflow import DAG
+from airflow.operators.python import PythonOperator
 from config import consumer_key, consumer_secret, access_token, access_token_secret
 from datetime import datetime, timedelta
 from sqlalchemy import create_engine
