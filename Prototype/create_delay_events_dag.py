@@ -9,11 +9,11 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from sqlalchemy import create_engine
 from datetime import datetime, timedelta
+from config import db_con_str
 
 
-def df_to_db(database, table, dataframe):
+def df_to_db(database, table, dataframe, conn_string):
     """Appends the given dataframe to the given database table"""
-    conn_string = f'postgresql://postgres:ranch@localhost/{database}'
     db = create_engine(conn_string)
     conn = db.connect()
 
@@ -79,8 +79,8 @@ def main(trips_path, gtfs_path):
     routes_df['acquired_date'] = dates[1]
 
     # push the dataframes to the database
-    df_to_db('GTFS', 'Trips', trips_df)
-    df_to_db('GTFS', 'Routes', routes_df)
+    df_to_db('GTFS', 'Trips', trips_df, db_con_str)
+    df_to_db('GTFS', 'Routes', routes_df, db_con_str)
 
     df = create_trip_df(yesterdays_trips)  # create dataframe from all the previous day's trip updates
     df.groupby(['id', 'stop_id'])['timestamp'].max()  # group by trip_id (id) and stop_id. Select the last delay
@@ -92,7 +92,7 @@ def main(trips_path, gtfs_path):
                              'departure.time': 'departure_time', 'departure.uncertainty': 'departure_uncertainty'}
                     , inplace=True)
     group_df['acquired_date'] = dates[1]  # add an acquired date field
-    df_to_db('GTFS', 'Delays', group_df)  # push the df to the database
+    df_to_db('GTFS', 'Delays', group_df, db_con_str)  # push the df to the database
 
 
 default_args = {
