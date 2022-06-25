@@ -55,9 +55,11 @@ def main(in_json_dir, out_csv_dir):
     if not os.path.isdir(out_csv_dir):
         os.mkdir(out_csv_dir)
 
-    p = Pool(8)
-    p.map(functools.partial(create_trip_update_csv, out_csv_dir=out_csv_dir, json_dir=in_json_dir),
-          os.listdir(in_json_dir))
+    # p = Pool(8)
+    # p.map(functools.partial(create_trip_update_csv, out_csv_dir=out_csv_dir, json_dir=in_json_dir),
+    #       os.listdir(in_json_dir))
+    for file_name in os.listdir(in_json_dir):
+        create_trip_update_csv(file_name, in_json_dir, out_csv_dir)
 
     csv_files = f'{out_csv_dir}/*.csv'
     ddf = dd.read_csv(csv_files)
