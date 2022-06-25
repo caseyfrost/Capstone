@@ -23,7 +23,7 @@ def df_to_db(table, dataframe, conn_string):
     db = create_engine(conn_string)
     conn = db.connect()
 
-    dataframe.to_sql(table, con=conn, if_exists='append', index=False)
+    dataframe.to_sql(table, uri=conn_string, if_exists='append', index=False)
     conn = psycopg2.connect(conn_string)
     conn.autocommit = True
     conn.commit()
@@ -71,9 +71,10 @@ def main(in_json_dir, out_csv_dir):
     group_df = ddf[ddf['timestamp'] == ddf['timestamp_max']]
     group_df = group_df.drop(['timestamp_max'], axis=1)
     group_df['id'] = group_df['id'].astype(int)  # convert the id field from object to int for the next join
-    group_df.rename(columns={'id': 'trip_id', 'arrival.delay': 'arrival_delay', 'arrival.time': 'arrival_time',
-                             'arrival.uncertainty': 'arrival_uncertainty', 'departure.delay': 'departure_delay',
-                             'departure.time': 'departure_time', 'departure.uncertainty': 'departure_uncertainty'})
+    group_df = group_df.rename(columns={'id': 'trip_id', 'arrival.delay': 'arrival_delay',
+                                        'arrival.time': 'arrival_time', 'arrival.uncertainty': 'arrival_uncertainty',
+                                        'departure.delay': 'departure_delay', 'departure.time': 'departure_time',
+                                        'departure.uncertainty': 'departure_uncertainty'})
     group_df['acquired_date'] = yesterday  # add an acquired date field
     df_to_db('Delays', group_df, db_con_str)  # write the delay events to the database
 
