@@ -30,3 +30,8 @@ class BARTRealTime(object):
         while True:
             self.produce_trip_updates()
             time.sleep(30)
+
+
+test = BARTRealTime()
+
+test.run()
