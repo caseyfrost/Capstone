@@ -36,7 +36,10 @@ def create_trip_update_csv(trip_update_json, json_dir, out_csv_dir):
     with open(file, 'r') as cur_file:
         updates = json.load(cur_file)
         timestamp = updates['header']['timestamp']
-        df = pd.json_normalize(updates['entity'], record_path=['trip_update', 'stop_time_update'], meta=['id'])
+        df = pd.json_normalize(updates['entity'], ['trip_update', 'stop_time_update'],
+                               ['id', ['trip_update', 'trip', 'schedule_relationship']])
+        df = df[df['trip_update.trip.schedule_relationship'] != 3]
+        df = df.drop(['trip_update.trip.schedule_relationship'], axis=1)
         df = df[df['arrival.delay'] != 0]
         df['timestamp'] = timestamp
         out_file = os.path.join(out_csv_dir, f'{timestamp}.csv')
