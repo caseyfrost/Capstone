@@ -8,8 +8,9 @@ from datetime import datetime, timedelta
 
 
 def get_tweets(api_object, query, amount):
-    tweet_list = list(tweepy.Cursor(api_object.search_tweets, q=query, count=100, lang='en').items(amount))
-    tweets = [[tweet.created_at, tweet.text, tweet.user._json['screen_name']] for tweet in tweet_list]
+    tweet_list = list(tweepy.Cursor(api_object.search_tweets, q=query, count=250, lang='en',
+                                    tweet_mode='extended').items(amount))
+    tweets = [[tweet.created_at, tweet.full_text, tweet.user._json['screen_name']] for tweet in tweet_list]
     return tweets
 
 
@@ -28,7 +29,7 @@ def main():
 
     df = pd.DataFrame(tweets, columns=['created_date', 'text', 'handle'])
 
-    df_to_db('GTFS', 'Tweets', df, db_con_str)
+    df_to_db('Tweets', df, db_con_str)
 
 
 default_args = {
