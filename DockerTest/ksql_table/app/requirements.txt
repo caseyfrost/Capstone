@@ -1,0 +1,5 @@
+kafka-python==2.0.2
+ksql==0.10.2
+requests==2.27.1
+protobuf==3.20.0
+gtfs-realtime-bindings
